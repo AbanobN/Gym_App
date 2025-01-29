@@ -81,6 +81,7 @@ dependencies {
     // Testing
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.test.manifest)
+    testImplementation(libs.kotlinx.coroutines.test)
 
 
 
