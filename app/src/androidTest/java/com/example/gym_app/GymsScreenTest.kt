@@ -7,7 +7,9 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.example.gym_app.DummyGymsList.getDummyGymsList
+import com.example.gym_app.gyms.GymsScreen
 import com.example.gym_app.gyms.SemanticsDescription
+import com.example.gym_app.ui.theme.Gym_AppTheme
 import org.junit.Rule
 import org.junit.Test
 
@@ -19,7 +21,7 @@ class GymsScreenTest{
     fun loadingState_isActive()
     {
         testRule.setContent {
-            GymsAroundTheme{
+            Gym_AppTheme{
                 GymsScreen(state= GymsScrenState(
                     gyms = emptyList(),
                     isLoading = true,
@@ -37,7 +39,7 @@ class GymsScreenTest{
         val gymsList = getDummyGymsList()
 
         testRule.setContent {
-            GymsAroundTheme{
+            Gym_AppTheme{
                 GymsScreen(state= GymsScrenState(
                     gyms = gymsList,
                     isLoading = false,
@@ -56,7 +58,7 @@ class GymsScreenTest{
         val errorText = "Failed to load data"
 
         testRule.setContent {
-            GymsAroundTheme{
+            Gym_AppTheme{
                 GymsScreen(state= GymsScrenState(
                     gyms = emptyList(),
                     isLoading = false,
@@ -75,7 +77,7 @@ class GymsScreenTest{
         val gymsList = getDummyGymsList()
         val gymItem = gymsList[0]
         testRule.setContent {
-            GymsAroundTheme{
+            Gym_AppTheme{
                 GymsScreen(state= GymsScrenState(
                     gyms = gymsList,
                     isLoading = false,
