@@ -7,8 +7,8 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.example.gym_app.DummyGymsList.getDummyGymsList
-import com.example.gym_app.gyms.GymsScreen
 import com.example.gym_app.gyms.SemanticsDescription
+import com.example.gym_app.gyms.presentation.gym_screen.view.GymsScreen
 import com.example.gym_app.ui.theme.Gym_AppTheme
 import org.junit.Rule
 import org.junit.Test

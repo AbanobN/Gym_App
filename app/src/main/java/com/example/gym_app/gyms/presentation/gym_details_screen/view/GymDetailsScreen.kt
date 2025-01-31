@@ -1,4 +1,4 @@
-package com.example.gym_app.gyms
+package com.example.gym_app.gyms.presentation.gym_details_screen.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,21 +12,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.gym_app.gyms.presentation.gym_screen.view.DefaultIcon
+import com.example.gym_app.gyms.presentation.gym_screen.view.GymDetails
+import com.example.gym_app.gyms.presentation.gym_details_screen.viewmodel.GymDetailsViewModel
 
 
 @Composable
 fun GymDetailsScreen() {
-    val gymDetailsViewModel:GymDetailsViewModel = viewModel()
-    val item = gymDetailsViewModel.state.value
+    val gymDetailsViewModel: GymDetailsViewModel = viewModel()
+    val item = gymDetailsViewModel.state.value.gym
 
-    item?.let {
-        Column(horizontalAlignment = Alignment.CenterHorizontally , modifier = Modifier.fillMaxSize().padding(16.dp, top = 40.dp)) {
-            DefaultIcon(icon = Icons.Filled.Place,
-                modifier = Modifier.padding(top = 32.dp, bottom = 32.dp),
-                contentDescription = "Location Icon")
+    Column(horizontalAlignment = Alignment.CenterHorizontally , modifier = Modifier.fillMaxSize().padding(16.dp, top = 40.dp)) {
+        DefaultIcon(icon = Icons.Filled.Place,
+            modifier = Modifier.padding(top = 32.dp, bottom = 32.dp),
+            contentDescription = "Location Icon")
+        if (item != null) {
             GymDetails(gym = item,
                 modifier = Modifier.padding(bottom = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally)
+        }
+        if (item != null) {
             Text(text = if(item.isOpen) "Gym is Open" else "Gym is Closed",color = if (item.isOpen) Color.Green else Color.Red)
         }
     }

@@ -1,4 +1,4 @@
-package com.example.gym_app.gyms
+package com.example.gym_app.gyms.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,6 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.gym_app.gyms.presentation.gym_details_screen.view.GymDetailsScreen
+import com.example.gym_app.gyms.presentation.gym_screen.view.GymsScreen
 import com.example.gym_app.ui.theme.Gym_AppTheme
 
 class MainActivity : ComponentActivity() {
