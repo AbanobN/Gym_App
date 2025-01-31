@@ -3,7 +3,6 @@ package com.example.gym_app.gyms
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -18,10 +17,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 //    @MainDispatcher private val dispatcher: CoroutineDispatcher
 //) : ViewModel() {
 class GymsViewModel(
-    private val stateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private var gymsApiService: GymsApiService
+
+    private var gymsDao = GymsDatabase.getDaoInstance(GymsApplication.getApplicationContext())
 
     private val errorHandler = CoroutineExceptionHandler{ _, throwable ->
         throwable.printStackTrace()
@@ -42,41 +42,56 @@ class GymsViewModel(
 
     private fun getGyms(){
         viewModelScope.launch(errorHandler) {
-            val gyms = getGymsFromRemoteDB()
-            state = gyms.restoreSelectedGyms()
+            state = getAllGyms()
         }
 
     }
 
-    private suspend fun getGymsFromRemoteDB() = withContext(Dispatchers.IO) { gymsApiService.getGyms() }
+    private suspend fun getAllGyms() = withContext(Dispatchers.IO) {
+        try {
+            updateLocalDatabase()
+        }
+        catch (ex:Exception){
+            if(gymsDao.getAll().isEmpty())
+            {
+                throw Exception("Something went wrong, data wasn't found")
+            }
+        }
+        gymsDao.getAll()
+    }
+
+    private suspend fun updateLocalDatabase() {
+        val gyms = gymsApiService.getGyms()
+        val favoriteGymsList  = gymsDao.getFavoriteGyms()
+
+        gymsDao.addAll(gyms)
+        gymsDao.updateAll(
+            favoriteGymsList.map{
+                GymFavoriteState(id = it.id , isFavorite = true)
+            }
+        )
+    }
 
     var state by mutableStateOf(emptyList<Gym>())
 
     fun toggleFavoriteStatus(gymId: Int) {
         val gyms = state.toMutableList()
         val index = gyms.indexOfFirst { it.id == gymId }
-        gyms[index] = gyms[index].copy(isFavorite = !gyms[index].isFavorite)
-        storeSelectedGym(gyms[index])
-        state = gyms
-    }
 
-    private fun storeSelectedGym(gym: Gym) {
-        val savedHandleList = stateHandle.get<List<Int>?>(FAV_IDS).orEmpty().toMutableList()
-        if(gym.isFavorite) savedHandleList.add(gym.id) else savedHandleList.remove(gym.id)
-        stateHandle[FAV_IDS] = savedHandleList
-    }
-
-    private fun List<Gym>.restoreSelectedGyms() : List<Gym> {
-        val savedHandleList = stateHandle.get<List<Int>?>(FAV_IDS)?.let{savedIds ->
-            savedIds.forEach{ gymId ->
-                this.find { it.id == gymId }?.isFavorite = true
-            }
+        viewModelScope.launch {
+            val updatedGymsList = toggleFavoriteGym(gymId, !gyms[index].isFavorite)
+            state = updatedGymsList
         }
-
-        return this
     }
 
-    companion object{
-        const val FAV_IDS = "favoriteGymsIDs"
+    private suspend fun toggleFavoriteGym(gymId: Int, newFavoriteState: Boolean) = withContext(Dispatchers.IO){
+        gymsDao.update(
+            GymFavoriteState(
+                id=gymId,
+                isFavorite = newFavoriteState
+            )
+        )
+        gymsDao.getAll()
     }
+
 }
