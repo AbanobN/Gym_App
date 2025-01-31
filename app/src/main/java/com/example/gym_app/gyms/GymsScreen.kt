@@ -18,11 +18,6 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,24 +29,24 @@ import androidx.wear.compose.material.ContentAlpha
 import androidx.wear.compose.material.LocalContentAlpha
 
 @Composable
-fun GymsScreen(){
+fun GymsScreen(onItemClick:(Int) -> Unit){
     val gymsViewModel: GymsViewModel = viewModel()
 
     LazyColumn(
         modifier = Modifier.padding(top = 40.dp, bottom = 40.dp)
     ) {
         items(gymsViewModel.state) {gym ->
-            GymItem(gym,
-                onClick = { gymId ->
-                    gymsViewModel.toggleFavoriteStatus(gymId)
-            })
+            GymItem( gym = gym,
+                onFavoriteIconClick = { gymId -> gymsViewModel.toggleFavoriteStatus(gymId) },
+                onItemClick = {id -> onItemClick(id)}
+            )
         }
     }
 }
 
 @Composable
-fun GymDetails(gym: Gym,modifier: Modifier) {
-    Column(modifier) {
+fun GymDetails(gym: Gym,modifier: Modifier, horizontalAlignment: Alignment.Horizontal = Alignment.Start) {
+    Column(modifier , horizontalAlignment = horizontalAlignment) {
         Text(
             text = gym.name,
             style = typography.headlineSmall,
@@ -70,17 +65,19 @@ fun GymDetails(gym: Gym,modifier: Modifier) {
 }
 
 @Composable
-fun GymItem(gym: Gym , onClick:(Int) -> Unit) {
+fun GymItem(gym: Gym, onFavoriteIconClick:(Int) -> Unit, onItemClick:(Int) -> Unit) {
     val icon = if(gym.isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
     Card(
         elevation = CardDefaults.cardElevation(4.dp),
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier
+        .padding(8.dp)
+        .clickable { onItemClick(gym.id) }
     ) {
         Row(verticalAlignment = Alignment.CenterVertically , modifier = Modifier.padding(8.dp)){
             DefaultIcon(Icons.Filled.Place , Modifier.weight(0.15f),"Gym Icon")
             GymDetails(gym , Modifier.weight(0.70f))
             DefaultIcon(icon , Modifier.weight(0.15f) , "Favorite Icon"){
-                onClick(gym.id)
+                onFavoriteIconClick(gym.id)
             }
         }
     }
