@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -75,8 +76,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     // Hilt
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.android.v2511)
+    kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
     // ViewModel
@@ -87,6 +88,8 @@ dependencies {
     debugImplementation(libs.ui.test.manifest)
     testImplementation(libs.kotlinx.coroutines.test)
 
+}
 
-
+kapt {
+    correctErrorTypes = true
 }

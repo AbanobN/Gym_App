@@ -10,21 +10,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gym_app.gyms.data.GymsRepository
 import com.example.gym_app.gyms.domain.Gym
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class GymDetailsViewModel(
-    private val stateHandle: SavedStateHandle
-) : ViewModel()  {
+@HiltViewModel
+class GymDetailsViewModel @Inject constructor(
+    stateHandle: SavedStateHandle,
+    private val gymRepo: GymsRepository
+) : ViewModel() {
+
     private var _state by mutableStateOf(
         GymDetailsScreenState (
             gym = null,
             isLoading = true
         )
     )
+    
     val state: State<GymDetailsScreenState>
-    get() = derivedStateOf { _state }
-
-    private val gymRepo = GymsRepository()
+    get() = derivedStateOf {_state}
 
     init {
 
@@ -34,11 +38,18 @@ class GymDetailsViewModel(
 
     private fun getGym(id: Int) {
         viewModelScope.launch {
-            val gym = gymRepo.getGymFromRemoteDB(id)
-            _state = _state.copy(
-                gym = Gym(id=gym.id,name=gym.name, location = gym.location, isOpen = gym.isOpen),
-                isLoading = false
-            )
+            try {
+                val gym = gymRepo.getGymFromRemoteDB(id)
+                _state = _state.copy(
+                    gym = Gym(id=gym.id, name=gym.name, location=gym.location, isOpen=gym.isOpen),
+                    isLoading = false
+                )
+            } catch (e: Exception) {
+                _state = _state.copy(
+                    isLoading = false,
+                    error = e.localizedMessage ?: "An error occurred"
+                )
+            }
         }
     }
 

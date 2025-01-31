@@ -1,27 +1,21 @@
 package com.example.gym_app.gyms.data
 
-import com.example.gym_app.gyms.data.remote.GymsApiService
-import com.example.gym_app.gyms.GymsApplication
-import com.example.gym_app.gyms.data.local.GymsDatabase
+import android.util.Log
+import com.example.gym_app.gyms.data.local.GymsDao
 import com.example.gym_app.gyms.data.local.LocalGym
 import com.example.gym_app.gyms.data.local.LocalGymFavoriteState
+import com.example.gym_app.gyms.data.remote.GymsApiService
 import com.example.gym_app.gyms.domain.Gym
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class GymsRepository {
-
-    private val apiService: GymsApiService = Retrofit.Builder()
-        .addConverterFactory(
-            GsonConverterFactory.create()
-        )
-        .baseUrl("https://gym-app-dd107-default-rtdb.firebaseio.com/")
-        .build()
-        .create(GymsApiService::class.java)
-
-    private var gymsDao = GymsDatabase.getDaoInstance(GymsApplication.getApplicationContext())
+@Singleton
+class GymsRepository @Inject constructor(
+    private val apiService: GymsApiService,
+    private var gymsDao:GymsDao
+) {
 
     suspend fun toggleFavoriteGym(gymId: Int, state: Boolean) = withContext(
         Dispatchers.IO){
@@ -44,7 +38,6 @@ class GymsRepository {
                 throw Exception("Something went wrong, data wasn't found")
             }
         }
-        gymsDao.getAll()
     }
 
     suspend fun getGyms():List<Gym>{
@@ -58,7 +51,6 @@ class GymsRepository {
     private suspend fun updateLocalDatabase() {
         val gyms = apiService.getGyms()
         val favoriteGymsList  = gymsDao.getFavoriteGyms()
-
         gymsDao.addAll(
             gyms.map{
             LocalGym(id=it.id,name=it.name, location = it.location, isOpen = it.isOpen)
@@ -71,7 +63,7 @@ class GymsRepository {
     }
 
     suspend fun getGymFromRemoteDB(id: Int) = withContext(Dispatchers.IO) {
-        apiService.getGym(id).values.first()
+        apiService.getGym(id).values.firstOrNull() ?: throw Exception("Gym not found")
     }
 
 }

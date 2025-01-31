@@ -27,16 +27,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material.ContentAlpha
 import androidx.wear.compose.material.LocalContentAlpha
 import com.example.gym_app.gyms.domain.Gym
+import com.example.gym_app.gyms.presentation.gym_screen.viewmodel.GymsScreenState
 import com.example.gym_app.gyms.presentation.gym_screen.viewmodel.GymsViewModel
 
 @Composable
-fun GymsScreen(onItemClick:(Int) -> Unit){
-    val gymsViewModel: GymsViewModel = viewModel()
-    val state = gymsViewModel.state.value
+fun GymsScreen(state: GymsScreenState,
+               onItemClick:(Int) -> Unit,
+               onFavoriteIconClick: (id: Int, oldValue: Boolean) -> Unit
+){
+
     Box (
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxWidth()
@@ -46,7 +50,7 @@ fun GymsScreen(onItemClick:(Int) -> Unit){
         ) {
             items(state.gyms) {gym ->
                 GymItem( gym = gym,
-                    onFavoriteIconClick = { gymId -> gymsViewModel.toggleFavoriteStatus(gymId) },
+                    onFavoriteIconClick = { gymId , oldValue -> onFavoriteIconClick(gymId,oldValue) },
                     onItemClick = {id -> onItemClick(id)}
                 )
             }
@@ -81,7 +85,7 @@ fun GymDetails(gym: Gym, modifier: Modifier, horizontalAlignment: Alignment.Hori
 }
 
 @Composable
-fun GymItem(gym: Gym, onFavoriteIconClick:(Int) -> Unit, onItemClick:(Int) -> Unit) {
+fun GymItem(gym: Gym, onFavoriteIconClick:(Int , Boolean) -> Unit, onItemClick:(Int) -> Unit) {
     val icon = if(gym.isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
     Card(
         elevation = CardDefaults.cardElevation(4.dp),
@@ -93,7 +97,7 @@ fun GymItem(gym: Gym, onFavoriteIconClick:(Int) -> Unit, onItemClick:(Int) -> Un
             DefaultIcon(Icons.Filled.Place , Modifier.weight(0.15f),"Gym Icon")
             GymDetails(gym , Modifier.weight(0.70f))
             DefaultIcon(icon , Modifier.weight(0.15f) , "Favorite Icon"){
-                onFavoriteIconClick(gym.id)
+                onFavoriteIconClick(gym.id ,gym.isFavorite)
             }
         }
     }

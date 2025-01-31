@@ -11,17 +11,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.gym_app.gyms.domain.Gym
 import com.example.gym_app.gyms.presentation.gym_screen.view.DefaultIcon
 import com.example.gym_app.gyms.presentation.gym_screen.view.GymDetails
-import com.example.gym_app.gyms.presentation.gym_details_screen.viewmodel.GymDetailsViewModel
 
 
 @Composable
-fun GymDetailsScreen() {
-    val gymDetailsViewModel: GymDetailsViewModel = viewModel()
-    val item = gymDetailsViewModel.state.value.gym
-
+fun GymDetailsScreen(
+    item : Gym?
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally , modifier = Modifier.fillMaxSize().padding(16.dp, top = 40.dp)) {
         DefaultIcon(icon = Icons.Filled.Place,
             modifier = Modifier.padding(top = 32.dp, bottom = 32.dp),
