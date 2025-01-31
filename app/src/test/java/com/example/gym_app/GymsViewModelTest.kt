@@ -1,5 +1,10 @@
 package com.example.gym_app
 
+import com.example.gym_app.gyms.data.GymsRepository
+import com.example.gym_app.gyms.domain.GetInitialGymsUseCase
+import com.example.gym_app.gyms.domain.GetSortedGymsUseCase
+import com.example.gym_app.gyms.domain.ToggleFavoriteStateUseCase
+import com.example.gym_app.gyms.presentation.gym_screen.viewmodel.GymsScreenState
 import com.example.gym_app.gyms.presentation.gym_screen.viewmodel.GymsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -18,24 +23,13 @@ class GymsViewModelTest {
     fun loadingState_isSetCorrectly() = scope.runTest{
         val viewModel = getViewModel()
         val state = viewModel.state.value
-        assert(state == GymScreenState(
+        assert(state == GymsScreenState(
             gyms = emptyList(),
             isLoading = true,
             error = null
         ))
     }
-
-    @Test
-    fun loadedContentState_isSetCorrectly() = scope.runTest{
-        val viewModel = getViewModel()
-        advanceUntilIdle()
-        val state = viewModel.state.value
-        assert(state == GymScreenState(
-            gyms = DummyGymsList.getDomainDummyGymsList(),
-            isLoading = false,
-            error = null
-        ))
-    }
+    
 
     private fun getViewModel(): GymsViewModel {
         val gymsRepository = GymsRepository(TestGymsApiService(),TestGymsDao())

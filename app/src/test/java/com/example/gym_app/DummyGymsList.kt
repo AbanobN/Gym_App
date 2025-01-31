@@ -1,5 +1,8 @@
 package com.example.gym_app
 
+import com.example.gym_app.gyms.data.remote.RemoteGym
+import com.example.gym_app.gyms.domain.Gym
+
 object DummyGymsList {
     fun getDummyGymsList() = arrayListOf(
         RemoteGym(0,"n0","p0",false),

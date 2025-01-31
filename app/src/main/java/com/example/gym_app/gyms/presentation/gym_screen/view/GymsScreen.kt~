@@ -33,7 +33,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material.ContentAlpha
 import androidx.wear.compose.material.LocalContentAlpha
-import com.example.gym_app.gyms.SemanticsDescription
 import com.example.gym_app.gyms.domain.Gym
 import com.example.gym_app.gyms.presentation.gym_screen.viewmodel.GymsScreenState
 import com.example.gym_app.gyms.presentation.gym_screen.viewmodel.GymsViewModel
@@ -60,7 +59,7 @@ fun GymsScreen(state: GymsScreenState,
         }
 
         if(state.isLoading) CircularProgressIndicator(Modifier.semantics {
-            this.contentDescription = SemanticsDescription.GYMS_LIST_LOADING
+            this.contentDescription
         })
         state.error?.let{
             Text(it)

@@ -26,7 +26,7 @@ class GymDetailsViewModel @Inject constructor(
             isLoading = true
         )
     )
-    
+
     val state: State<GymDetailsScreenState>
     get() = derivedStateOf {_state}
 

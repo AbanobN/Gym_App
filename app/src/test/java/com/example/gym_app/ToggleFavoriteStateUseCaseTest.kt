@@ -1,5 +1,8 @@
 package com.example.gym_app
 
+import com.example.gym_app.gyms.data.GymsRepository
+import com.example.gym_app.gyms.domain.GetSortedGymsUseCase
+import com.example.gym_app.gyms.domain.ToggleFavoriteStateUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope

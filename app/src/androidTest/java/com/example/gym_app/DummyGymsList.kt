@@ -1,5 +1,7 @@
 package com.example.gym_app
 
+import com.example.gym_app.gyms.domain.Gym
+
 object DummyGymsList {
     fun getDummyGymsList() = arrayListOf(
         Gym(0,"n0","p0",false),

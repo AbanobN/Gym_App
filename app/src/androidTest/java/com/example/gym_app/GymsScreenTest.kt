@@ -9,6 +9,7 @@ import androidx.compose.ui.test.performClick
 import com.example.gym_app.DummyGymsList.getDummyGymsList
 import com.example.gym_app.gyms.SemanticsDescription
 import com.example.gym_app.gyms.presentation.gym_screen.view.GymsScreen
+import com.example.gym_app.gyms.presentation.gym_screen.viewmodel.GymsScreenState
 import com.example.gym_app.ui.theme.Gym_AppTheme
 import org.junit.Rule
 import org.junit.Test
@@ -22,7 +23,7 @@ class GymsScreenTest{
     {
         testRule.setContent {
             Gym_AppTheme{
-                GymsScreen(state= GymsScrenState(
+                GymsScreen(state= GymsScreenState(
                     gyms = emptyList(),
                     isLoading = true,
                     error = null
@@ -40,11 +41,11 @@ class GymsScreenTest{
 
         testRule.setContent {
             Gym_AppTheme{
-                GymsScreen(state= GymsScrenState(
+                GymsScreen(state= GymsScreenState(
                     gyms = gymsList,
                     isLoading = false,
                     error = null
-                ),onItemClick= {},onFavoriteIconClick= {_:Int , _:Boolean -> })
+                ),onItemClick= {},onFavoriteIconClick= { _:Int, _:Boolean -> })
             }
         }
 
@@ -59,7 +60,7 @@ class GymsScreenTest{
 
         testRule.setContent {
             Gym_AppTheme{
-                GymsScreen(state= GymsScrenState(
+                GymsScreen(state= GymsScreenState(
                     gyms = emptyList(),
                     isLoading = false,
                     error = errorText
@@ -78,7 +79,7 @@ class GymsScreenTest{
         val gymItem = gymsList[0]
         testRule.setContent {
             Gym_AppTheme{
-                GymsScreen(state= GymsScrenState(
+                GymsScreen(state= GymsScreenState(
                     gyms = gymsList,
                     isLoading = false,
                     error = null
